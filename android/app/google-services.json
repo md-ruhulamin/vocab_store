@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "428599192434",
+    "project_id": "quizword-75ffc",
+    "storage_bucket": "quizword-75ffc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428599192434:android:d74f175c4b52892384cbeb",
+        "android_client_info": {
+          "package_name": "com.example.word_meaning"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBg7rybDE5gbMN01mOzvbPWUqIPRgjnRBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
