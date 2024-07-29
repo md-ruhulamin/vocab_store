@@ -45,5 +45,14 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+  	  <string>fetch</string>
+      <string>remote-notification</string>
+	</array>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Location is used to deliver personalized notifications.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Location is used to deliver personalized notifications.</string>
 </dict>
 </plist>
