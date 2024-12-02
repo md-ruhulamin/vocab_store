@@ -5,6 +5,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:word_meaning/common/widget/custome_text_field.dart';
+import 'package:word_meaning/data/data.dart';
+import 'package:word_meaning/features/idom_phrase/controllers/idom_controller.dart';
+import 'package:word_meaning/features/idom_phrase/screen/idom_list.dart';
 import 'package:word_meaning/features/search_word/screen/search_word.dart';
 import 'package:word_meaning/utils/color.dart';
 import 'package:word_meaning/controller.dart';
@@ -26,15 +29,16 @@ class _AddNewWordState extends State<AddNewWord> {
   TextEditingController meaningEditingController = TextEditingController();
   TextEditingController sentenceEditingController = TextEditingController();
   late WordController wordController;
-
+  late IdiomController idiomController;
   @override
   void initState() {
     super.initState();
     wordController = Get.put(WordController());
-    wordController.fetchAllWords2();
+    wordController.fetchAllWords();
+    idiomController = Get.put(IdiomController());
     FlutterAppBadgeControl.isAppBadgeSupported().then((value) {
-  print("isAppBadgeSupported: $value");
-});
+      print("isAppBadgeSupported: $value");
+    });
   }
 
   @override
@@ -47,6 +51,7 @@ class _AddNewWordState extends State<AddNewWord> {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = Get.arguments;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: backgroundColor,
@@ -76,7 +81,7 @@ class _AddNewWordState extends State<AddNewWord> {
                         hinttext: "Meaning",
                       )),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical:5),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
                     child: CustomTextField(
                         maxline: 7,
                         controller: sentenceEditingController,
@@ -100,33 +105,57 @@ class _AddNewWordState extends State<AddNewWord> {
                         ),
                       ),
                       onPressed: () async {
-                        print(authController.userString.value);
+                        //  print(arguments['from']);
                         final String currentWord =
                             wordEditingController.text.trim().toLowerCase();
-                        print(wordController.mywordList.length.toString());
-
+                        //   print(wordController.mywordList.length.toString());
                         int id = DateTime.now().microsecondsSinceEpoch;
+                        if (wordEditingController.text.trim().isNotEmpty) {
+                          if (arguments['from'] == "Word") {
+                            final CollectionReference words = FirebaseFirestore
+                                .instance
+                                .collection(authController.userString.value);
+                            int wordID = wordController.mywordList.length;
+                            String? docID = await checkModelExists(
+                                authController.userString.value, currentWord);
+                            bool isExist = isStringNotNullOrEmpty(docID);
+                            if (!isExist) {
+                              print("From word List");
+                              print(authController.userStringIdiom.value);
+                              await words.doc(id.toString()).set({
+                                'id': wordID,
+                                'sentence': sentenceEditingController.text,
+                                'word': currentWord,
+                                'meaning': meaningEditingController.text
+                              }).then((value) {
+                                Get.snackbar("Success", "${currentWord}added Successfully");
+                              });
+                            }
+                            Get.offAll(WordSearchScreen());
+                          } else if (arguments['from'] == "Idiom") {
+                       //     print("From Idom List");
+                     //       print(authController.userStringIdiom.value);
+                            final CollectionReference words =
+                                FirebaseFirestore.instance.collection(
+                                    authController.userStringIdiom.value);
+                            int wordID = idiomController.myIdiomList.length;
 
-                        if (wordEditingController.text.isNotEmpty) {
-                          final CollectionReference words = FirebaseFirestore
-                              .instance
-                              .collection(authController.userString.value);
-                          int wordID = wordController.mywordList.length;
-                          String? docID = await checkModelExists(
-                              authController.userString.value, currentWord);
-
-                          bool isExist = isStringNotNullOrEmpty(docID);
-                          if (!isExist) {
-                            await words.doc(id.toString()).set({
-                              'id': wordID,
-                              'sentence': sentenceEditingController.text,
-                              'word': currentWord,
-                              'meaning': meaningEditingController.text
-                            }).then((value) => allowNotification(2,currentWord));
-
-                            wordController.fetchAllWords2();
-                            
-                            Get.off(WordSearchScreen());
+                            String? docID = await checkModelExists(
+                                authController.userStringIdiom.value,
+                                currentWord);
+                            bool isExist = isStringNotNullOrEmpty(docID);
+                            if (!isExist) {
+                              await words.doc(id.toString()).set({
+                                'id': wordID,
+                                'sentence': sentenceEditingController.text,
+                                'word': currentWord,
+                                'meaning': meaningEditingController.text
+                              }).then((value) {
+                              Get.snackbar("Success", "${currentWord}added Successfully");
+                              });
+                            }
+                            // Navigator.pop(context);
+                           Get.offAll(IdiomList());
                           } else {
                             Get.snackbar(
                                 "Save Failed", "Word Already inserted");
@@ -172,83 +201,86 @@ class _AddNewWordState extends State<AddNewWord> {
     }
   }
 
-  void allowNotification(int n,String word) async {
-    Permission.notification.request().then((value) {
-      if (value.isGranted) {
-        print("Granted");
-        showNotification(n,word);
-       
-      } else {
-        print('Permission is not granted');
-      }
-    });
-  }
+  // void allowNotification(int n, String word) async {
+  //   wordController.fetchAllWords();
+  //   Permission.notification.request().then((value) {
+  //     if (value.isGranted) {
+  //       print("Granted");
+  //       showNotification(n, word);
+  //     } else {
+  //       print('Permission is not granted');
+  //     }
+  //   });
+  // }
 
-  void showNotification(int n,String word) async {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
+  // void showNotification(int n, String word) async {
+  //   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //       FlutterLocalNotificationsPlugin();
 
-    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const LinuxInitializationSettings initializationSettingsLinux =
-        LinuxInitializationSettings(defaultActionName: 'Open notification');
-    final DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings(onDidReceiveLocalNotification:
-            (int id, String? title, String? body, String? payload) {
-      // your call back to the UI
-    });
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsDarwin,
-            macOS: initializationSettingsDarwin,
-            linux: initializationSettingsLinux);
+  //   // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+  //   const AndroidInitializationSettings initializationSettingsAndroid =
+  //       AndroidInitializationSettings('@mipmap/ic_launcher');
+  //   const LinuxInitializationSettings initializationSettingsLinux =
+  //       LinuxInitializationSettings(defaultActionName: 'Open notification');
+  //   final DarwinInitializationSettings initializationSettingsDarwin =
+  //       DarwinInitializationSettings(onDidReceiveLocalNotification:
+  //           (int id, String? title, String? body, String? payload) {
+  //     // your call back to the UI
+  //   });
+  //   final InitializationSettings initializationSettings =
+  //       InitializationSettings(
+  //           android: initializationSettingsAndroid,
+  //           iOS: initializationSettingsDarwin,
+  //           macOS: initializationSettingsDarwin,
+  //           linux: initializationSettingsLinux);
 
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse details) {},
-    );
-    final styleList = [
-      BigTextStyleInformation(
-        'This is a big text notification. It allows you to display a longer text in the notification.',
-        htmlFormatBigText: true,
-        contentTitle: 'Big Text Notification',
-        htmlFormatContentTitle: true,
-      ),
-      BigPictureStyleInformation(
-        DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
-        largeIcon: DrawableResourceAndroidBitmap('assets/icons/icon.png'),
-        contentTitle: 'Big Picture Notification',
-        htmlFormatContentTitle: true,
-        summaryText: 'This is a big picture notification',
-        htmlFormatSummaryText: true,
-      ),
-      InboxStyleInformation(
-        [],
-        contentTitle: '$word ',
-        htmlFormatContentTitle: true,
-        summaryText: '$word is added to your dictionary',
-        htmlFormatSummaryText: true,
-      ),
-    ];
+  //   await flutterLocalNotificationsPlugin.initialize(
+  //     initializationSettings,
+  //     onDidReceiveNotificationResponse: (NotificationResponse details) {},
+  //   );
+  //   final styleList = [
+  //     BigTextStyleInformation(
+  //       'This is a big text notification. It allows you to display a longer text in the notification.',
+  //       htmlFormatBigText: true,
+  //       contentTitle: 'Big Text Notification',
+  //       htmlFormatContentTitle: true,
+  //     ),
+  //     BigPictureStyleInformation(
+  //       DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+  //       largeIcon: DrawableResourceAndroidBitmap('assets/icons/icon.png'),
+  //       contentTitle: 'Big Picture Notification',
+  //       htmlFormatContentTitle: true,
+  //       summaryText: 'This is a big picture notification',
+  //       htmlFormatSummaryText: true,
+  //     ),
+  //     InboxStyleInformation(
+  //       [],
+  //       contentTitle: '$word ',
+  //       htmlFormatContentTitle: true,
+  //       summaryText: '$word is added to your dictionary',
+  //       htmlFormatSummaryText: true,
+  //     ),
+  //   ];
 
-    AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-            'high_importance_channel', // Channel ID
-            'High Importance Notifications', // Channel name
-            channelDescription:
-                'This channel is used for important notifications.',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker',
-            number: 1,
-            styleInformation: styleList[n]);
+  //   AndroidNotificationDetails androidNotificationDetails =
+  //       AndroidNotificationDetails(
+  //           'high_importance_channel', // Channel ID
+  //           'High Importance Notifications', // Channel name
+  //           channelDescription:
+  //               'This channel is used for important notifications.',
+  //           importance: Importance.max,
+  //           priority: Priority.high,
+  //           ticker: 'ticker',
+  //           number: 1,
+  //           styleInformation: styleList[n]);
 
-    NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        wordController.mywordList.length, 'Successfully Added','$word is added at ${wordController.mywordList.length}', notificationDetails,
-        payload: 'item x');
-  }
+  //   NotificationDetails notificationDetails =
+  //       NotificationDetails(android: androidNotificationDetails);
+  //   await flutterLocalNotificationsPlugin.show(
+  //       wordController.mywordList.length,
+  //       'Successfully Added',
+  //       '$word is added at ${wordController.mywordList.length}',
+  //       notificationDetails,
+  //       payload: 'item x');
+  // }
 }

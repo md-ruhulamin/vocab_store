@@ -1,7 +1,7 @@
 
 import 'package:word_meaning/common/model/word_model.dart';
 
-List<Word> wordsList = [
+List<Word> mydatalist = [
 
   Word(
     1,
@@ -9,7 +9,6 @@ List<Word> wordsList = [
     'the act of raising a child.',
     'Parenting can be both challenging and rewarding.',
   ),
-
 // 70. Passion
   Word(
     1,
@@ -17,7 +16,6 @@ List<Word> wordsList = [
     'a strong feeling of enthusiasm or excitement for something.',
     'She has a passion for music and plays the violin beautifully.',
   ),
-
   Word(
     1,
     'Sharp',
@@ -71,13 +69,6 @@ List<Word> wordsList = [
     'We can stream movies and TV shows online.',
   ),
 
-// 77. Access
-  Word(
-    1,
-    'Access',
-    'the right or ability to use or enter something.',
-    'She was denied access to the restricted area.',
-  ),
 
 // 78. Download
   Word(
@@ -117,12 +108,7 @@ List<Word> wordsList = [
     'something given special importance or urgency.',
     'Completing this project is a top priority.',
   ),
-  Word(
-    1,
-    'Approval',
-    'the act of sanctioning or consenting to something.',
-    'We need approval from the manager before we can proceed.',
-  ),
+
   Word(
     1,
     'Commitment',
@@ -181,13 +167,6 @@ List<Word> wordsList = [
     'The younger generation is very tech-savvy.',
   ),
 
-// 87. Comment
-  Word(
-    1,
-    'Comment',
-    'a statement expressing an opinion or remark.',
-    'She left a comment on the blog post.',
-  ),
 
 // 88. Wrap-up
   Word(
@@ -1137,13 +1116,6 @@ List<Word> wordsList = [
     'Everyone has the right to education and healthcare.',
   ),
 // 31. Arrest
-  Word(
-    1,
-    'Arrest',
-    'to seize ( 1,a person) by legal authority or warrant; take into custody.',
-    'The police arrested the suspect for robbery.',
-  ),
-
 // 32. Instant
   Word(
     1,
@@ -1259,14 +1231,7 @@ List<Word> wordsList = [
     'words per minute, a unit used to measure typing speed.',
     'My typing speed is around 60 WPM.',
   ),
-// 45. Allocate
-  Word(
-    1,
-    'Allocate',
-    'to set apart for a particular purpose; assign or distribute.',
-    'The government allocated funds for education and healthcare.',
-  ),
-
+// 45. Allocatea
 // 46. Promotion
   Word(
     1,
@@ -1468,8 +1433,6 @@ List<Word> wordsList = [
     'The museum is showcasing a collection of ancient artifacts.',
   ),
 
-  Word(1, 'Amazing', 'Causing great surprise or wonder; astonishing.',
-      'The view from the top of the mountain was amazing.'),
   Word(
       1,
       'Unimaginable',
@@ -1636,7 +1599,7 @@ List<Word> wordsList = [
       'She proposed an ingenious solution to the problem.'),
   Word(
       1,
-      ' Knowledgeable',
+      'Knowledgeable',
       'Knowing a lot, having a lot of knowledge Smart,Wise',
       'He is the only knowledgeable professor at our university'),
   Word(1, 'Gigantic', 'Very big, Very huge',
@@ -2666,42 +2629,36 @@ List<Word> wordsList = [
     'a way of doing something in a systematic way, especially according to a set of rules or principles.',
     'There are different methods for teaching a foreign language.',
   ),
-
   Word(
     1,
     'Multinational',
     'involving or relating to more than one nation.',
     'The company is a multinational corporation with operations in several countries.',
   ),
-
   Word(
     1,
     'Opinion',
     'a view or judgment formed about something, not necessarily based on facts or knowledge.',
     'Everyone is entitled to their own opinion.',
   ),
-
   Word(
     1,
     'Refugee',
     'a person who has been forced to leave their country because of war, persecution, or natural disaster.',
     'The war created millions of refugees.',
   ),
-
   Word(
     1,
     'Tough',
     'difficult to deal with or overcome.',
     'It was a tough decision, but she knew it was the right one.',
   ),
-
   Word(
     1,
     'Crisis',
     'a time of great difficulty or danger.',
     'The company is facing a financial crisis.',
   ),
-
   Word(
     1,
     'Condition',
@@ -2714,21 +2671,12 @@ List<Word> wordsList = [
     'a stipulation or requirement.',
     'He got the job on the condition that he passed the probation period.',
   ),
-
-  Word(
-    1,
-    'Arrival',
-    'the act of someone or something arriving at a place.',
-    'The arrival of the new baby brought joy to the family.',
-  ),
-
   Word(
     1,
     'Departure',
     'the act of someone or something leaving a place.',
     'The plane\'s departure was delayed due to bad weather.',
   ),
-
   Word(
     1,
     'Shift',

@@ -20,11 +20,22 @@ class _DictionaryScreenState extends State<DictionaryScreen> {
       appBar: AppBar(
         title: const Text('Search Meaning'),
       ),
-      floatingActionButton: FloatingActionButton(
+       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
         onPressed: () {
-          Get.toNamed(RouteHelper.getAddNewWordPage());
+         Get.toNamed(RouteHelper.getAddNewWordPage(),
+           arguments: {
+              'from': 'Word',
+            },
+          );
         },
-        child: const Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100.0),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

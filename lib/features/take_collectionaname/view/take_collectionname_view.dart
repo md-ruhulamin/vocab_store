@@ -56,7 +56,7 @@ class _TakeCollectionState extends State<TakeCollection> {
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 18.0,
-                              fontFamily: 'Cera Pro'),
+                              ),
                         ),
                       ),
                       onPressed: () {

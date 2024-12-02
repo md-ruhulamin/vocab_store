@@ -11,12 +11,14 @@ class AppBarWidget extends StatelessWidget {
   Word currword;
   int index;
   int currlength;
-
+  String from;
   AppBarWidget({
     Key? key,
     required this.currword,
     required this.index,
     required this.currlength,
+    required this.from
+
   
   }) : super(key: key);
 
@@ -36,6 +38,7 @@ class AppBarWidget extends StatelessWidget {
             onPressed: () {
               
               Get.to(UpdateWordScreen(
+                from: from ,
                 index: currword.id,
                 word: currword,
                 

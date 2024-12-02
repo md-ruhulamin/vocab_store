@@ -7,6 +7,8 @@ import 'package:word_meaning/utils/color.dart';
 import 'package:word_meaning/controller.dart';
 import 'package:word_meaning/data/data.dart';
 
+import '../../../../../utils/dimension.dart';
+
 class FlipCard extends StatefulWidget {
   Word word;
   FlipCard({
@@ -20,7 +22,6 @@ class FlipCard extends StatefulWidget {
 
 class _FlipCardState extends State<FlipCard>
     with SingleTickerProviderStateMixin {
-
   late AnimationController _controller;
   late Animation<double> _animation;
   var idomcontroller;
@@ -70,10 +71,11 @@ class _FlipCardState extends State<FlipCard>
           alignment: Alignment.center,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            width: 400,
-            height: 400,
+            width: MobileDimensions.w100 * 4,
+            height: MobileDimensions.h100 * 4.7,
             decoration: BoxDecoration(
-              color: wordController.isFront.value ? frontColor : backgroundColor,
+              color:
+                  wordController.isFront.value ? frontColor : backgroundColor,
               boxShadow: const [BoxShadow(color: Colors.grey, blurRadius: 10)],
               borderRadius: BorderRadius.circular(10),
             ),
@@ -91,7 +93,7 @@ class _FlipCardState extends State<FlipCard>
                               style: const TextStyle(
                                   fontSize: 26, color: Colors.white),
                             ),
-                            SpeakTheWord(text:widget.word.word ),
+                            SpeakTheWord(text: widget.word.word),
                           ],
                         ),
                         Text(
@@ -109,7 +111,7 @@ class _FlipCardState extends State<FlipCard>
           ),
         ),
         const SizedBox(
-          height: 20,
+          height: 15,
         ),
         InkWell(
             onTap: _flipCard,

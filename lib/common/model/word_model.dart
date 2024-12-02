@@ -15,7 +15,7 @@ class Word {
     };
   }
 
-  factory Word.fromMap(Map<String, dynamic> map, String id) {
+  factory Word.fromMap(Map<String, dynamic> map) {
     return Word(
       map['id'],
       map['word'],

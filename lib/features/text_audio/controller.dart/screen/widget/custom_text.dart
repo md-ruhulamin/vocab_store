@@ -12,7 +12,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical:10),
       decoration: BoxDecoration(
         color: Colors.green,
         boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 10)],

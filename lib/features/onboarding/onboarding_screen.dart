@@ -1,14 +1,24 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:word_meaning/features/text_audio/controller.dart/screen/widget/custom_text.dart';
-import 'package:word_meaning/main.dart';
 
+import 'package:word_meaning/features/text_audio/controller.dart/screen/widget/custom_text.dart';
+
+import '../collection/collection_controller.dart';
 import '../initial_page/initialpage.dart';
 
-class Onboarding extends StatelessWidget {
+class Onboarding extends StatefulWidget {
   const Onboarding({super.key});
+
+  @override
+  State<Onboarding> createState() => _OnboardingState();
+}
+
+class _OnboardingState extends State<Onboarding> {
+  @override
+  void initState() {
+    super.initState();
+    Get.put(AuthController());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +32,7 @@ class Onboarding extends StatelessWidget {
 
 //           Unlock the World of Words.”
 // “Expand Your Lexicon.”
-// “Word by Word, We Grow.”
-
+// “Word by Word, We Grow.”\
           children: [
             const Text("Expand Your Lexicon Discover Learn and Remember.",
                 style: TextStyle(fontSize: 23)),
@@ -35,7 +44,7 @@ class Onboarding extends StatelessWidget {
 
             InkWell(
                 onTap: () {
-                  Get.to(InitialPage());
+                  Get.off(InitialPage());
                 },
                 child: CustomButton(text: "Let's Practice"))
           ],

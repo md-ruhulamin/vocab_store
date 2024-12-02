@@ -5,10 +5,12 @@ import 'package:word_meaning/features/text_audio/controller.dart/screen/widget/a
 import 'package:word_meaning/features/text_audio/controller.dart/screen/widget/card_Controller.dart';
 import 'package:word_meaning/controller.dart';
 import 'package:word_meaning/features/text_audio/controller.dart/screen/widget/flipcard.dart';
+
 class MyDictionaryCard extends StatefulWidget {
   @override
   _MyDictionaryCardState createState() => _MyDictionaryCardState();
 }
+
 class _MyDictionaryCardState extends State<MyDictionaryCard>
     with SingleTickerProviderStateMixin {
   final mywordcontroller = Get.put(WordController());
@@ -16,24 +18,24 @@ class _MyDictionaryCardState extends State<MyDictionaryCard>
   @override
   void initState() {
     super.initState();
-    mywordcontroller.fetchAllWords2();
+    mywordcontroller.fetchAllWords();
   }
 
   @override
   Widget build(BuildContext context) {
-   // print(mywordcontroller.isFront);
     return Scaffold(
         appBar: AppBar(
             title: Obx(() => mywordcontroller.mywordList.isEmpty
                 ? const Center(child: CircularProgressIndicator())
                 : AppBarWidget(
+                    from: 'MyWord',
                     index: mywordcontroller.indexformyword.value,
                     currword: mywordcontroller
                         .mywordList[mywordcontroller.indexformyword.value],
                     currlength: mywordcontroller.indexformyword.value + 1,
                   ))),
         body: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -45,10 +47,7 @@ class _MyDictionaryCardState extends State<MyDictionaryCard>
                               mywordcontroller.indexformyword.value]),
                 ),
                 const SizedBox(
-                  height: 20,
-                ),
-                const SizedBox(
-                  height: 40,
+                  height: 15,
                 ),
                 Obx(() => MyWordControllerButton(
                       index: mywordcontroller.indexformyword.value,

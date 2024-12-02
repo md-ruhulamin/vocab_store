@@ -8,6 +8,8 @@ import 'package:word_meaning/controller.dart';
 import 'package:word_meaning/features/text_audio/controller.dart/screen/operation/update.dart';
 import 'package:word_meaning/features/text_audio/controller.dart/screen/widget/custom_text.dart';
 
+import '../../../utils/dimension.dart';
+
 class WordFlipCard extends StatefulWidget {
   @override
   _WordFlipCardState createState() => _WordFlipCardState();
@@ -22,7 +24,6 @@ class _WordFlipCardState extends State<WordFlipCard>
   @override
   void initState() {
     super.initState();
-    wordcontroller.fetchAllWords2();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -55,21 +56,23 @@ class _WordFlipCardState extends State<WordFlipCard>
 
   @override
   Widget build(BuildContext context) {
+    print(MobileDimensions.h100 * 4);
     return Scaffold(
         appBar: AppBar(
             title: Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "  ${wordcontroller.indexforWord.value + 1}  ${wordsList[wordcontroller.indexforWord.value].word}",
+                      "  ${wordcontroller.indexforWord.value + 1}  ${mydatalist[wordcontroller.indexforWord.value].word}",
                     ),
                     IconButton(
                         onPressed: () {
                           print("Clicked");
                           Get.to(UpdateWordScreen(
+                            from: "MyWord",
                             index:
-                                wordsList[wordcontroller.indexforWord.value].id,
-                            word: wordsList[wordcontroller.indexforWord.value],
+                                mydatalist[wordcontroller.indexforWord.value].id,
+                            word: mydatalist[wordcontroller.indexforWord.value],
                           ));
                         },
                         icon: const Icon(Icons.edit))
@@ -117,8 +120,8 @@ class _WordFlipCardState extends State<WordFlipCard>
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
-                      width: 400,
-                      height: 400,
+                      width: MobileDimensions.w100 * 4,
+                      height: MobileDimensions.h100 * 4.5,
                       decoration: BoxDecoration(
                         color: wordcontroller.isFront.value
                             ? frontColor
@@ -138,22 +141,21 @@ class _WordFlipCardState extends State<WordFlipCard>
                                   Column(
                                     children: [
                                       Text(
-                                        wordsList[wordcontroller
+                                        mydatalist[wordcontroller
                                                 .indexforWord.value]
                                             .word,
                                         style: const TextStyle(
                                             fontSize: 28, color: Colors.white),
                                       ),
                                       SpeakTheWord(
-                                        text: wordsList[wordcontroller
+                                        text: mydatalist[wordcontroller
                                                 .indexforWord.value]
                                             .word,
                                       ),
-                                      
                                     ],
                                   ),
                                   Text(
-                                    wordsList[wordcontroller.indexforWord.value]
+                                    mydatalist[wordcontroller.indexforWord.value]
                                         .sentence,
                                     style: const TextStyle(
                                         fontSize: 16, color: Colors.white),
@@ -161,7 +163,7 @@ class _WordFlipCardState extends State<WordFlipCard>
                                 ],
                               )
                             : Text(
-                                wordsList[wordcontroller.indexforWord.value]
+                                mydatalist[wordcontroller.indexforWord.value]
                                     .meaning,
                                 style: const TextStyle(
                                     fontSize: 20, color: Colors.white),
@@ -171,7 +173,7 @@ class _WordFlipCardState extends State<WordFlipCard>
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 InkWell(
                     onTap: _flipCard,
@@ -179,7 +181,7 @@ class _WordFlipCardState extends State<WordFlipCard>
                         height: 45,
                         image: AssetImage("assets/icons/flip.png"))),
                 const SizedBox(
-                  height: 40,
+                  height:20,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,7 +205,7 @@ class _WordFlipCardState extends State<WordFlipCard>
                     InkWell(
                         onTap: () {
                           if (wordcontroller.indexforWord.value <
-                              wordsList.length - 1) {
+                              mydatalist.length - 1) {
                             wordcontroller.indexforWord.value += 1;
                             wordcontroller.isFront.value = true;
                           }
@@ -226,10 +228,10 @@ class _WordFlipCardState extends State<WordFlipCard>
     int index = wordcontroller.mywordList.last.id;
     await words.doc((index).toString()).set({
       'id': index + 1,
-      'sentence': wordsList[index].sentence,
-      'word': wordsList[index].word,
-      'meaning': wordsList[index].meaning
+      'sentence': mydatalist[index].sentence,
+      'word': mydatalist[index].word,
+      'meaning': mydatalist[index].meaning
     }).then((value) =>
-        Get.snackbar("Success", "${wordsList[index].word} added Successfully"));
+        Get.snackbar("Success", "${mydatalist[index].word} added Successfully"));
   }
 }

@@ -19,8 +19,6 @@ class RouteHelper {
   static const String defaultwordpage = "/word-page";
   static String getDefaultWordPage() => '$defaultwordpage';
 
-  static const String mywordpage = "/my-word-page";
-  static String getMyWordPage() => '$mywordpage';
 
   static const String idompage = "/idom-page";
   static String getIdomPage() => '$idompage';
@@ -47,8 +45,7 @@ static const String searchword = "/search-word";
   static List<GetPage> routes = [
     GetPage(name: initial, page: () => const HomePage()),
     GetPage(name: defaultwordpage, page: () => WordList()),
-    GetPage(name: idompage, page: () => const IdomList()),
-    GetPage(name: mywordpage, page: () => MyWordList()),
+    GetPage(name: idompage, page: () =>  IdiomList()),
     GetPage(name: addnewword, page: () => const AddNewWord()),
     GetPage(name: searchmeaning, page: () => DictionaryScreen()),
     GetPage(name: searchword, page: () => WordSearchScreen()),

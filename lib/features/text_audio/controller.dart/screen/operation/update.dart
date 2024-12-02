@@ -2,24 +2,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:word_meaning/common/collection_name.dart';
 import 'package:word_meaning/common/model/word_model.dart';
-import 'package:word_meaning/main.dart';
-
-import 'package:word_meaning/utils/color.dart';
 import 'package:word_meaning/controller.dart';
 import 'package:word_meaning/features/add_word_to_dictionary/screen/addword.dart';
-
+import 'package:word_meaning/features/idom_phrase/controllers/idom_controller.dart';
+import '../../../../../route/routes.dart';
+import '../../../../../utils/color.dart';
 import '../../../../collection/collection_controller.dart';
 
 class UpdateWordScreen extends StatefulWidget {
   Word word;
   int index;
-
+  String from;
   UpdateWordScreen({
     Key? key,
     required this.word,
     required this.index,
+    required this.from,
   }) : super(key: key);
 
   @override
@@ -48,7 +47,7 @@ class _UpdateWordScreenState extends State<UpdateWordScreen> {
     sentenceEditingController.text = widget.word.sentence;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Update Your Word "),
+        title: Text("Update Your ${widget.from}"),
       ),
       body: SafeArea(
         child: Container(
@@ -105,79 +104,132 @@ class _UpdateWordScreenState extends State<UpdateWordScreen> {
                     height: 20,
                   ),
                   Center(
-                    child: ElevatedButton(
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 42.0),
-                        child: Text(
-                          'Update Word',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.0,
-                              fontFamily: 'Cera Pro'),
-                        ),
-                      ),
-                      onPressed: () async {
-                        //    wordController.fetchAllWords2();
-                        int docid = widget.word.id;
-                        final CollectionReference collectionRef =
-                            FirebaseFirestore.instance
-                                .collection(authController.userString.value);
+                      child: ElevatedButton(
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 42.0),
+                            child: Text(
+                              'Update Word',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  fontFamily: 'Cera Pro'),
+                            ),
+                          ),
+                          onPressed: () async {
+                            print("Update Button");
+                            int docid = widget.word.id;
+                            if (wordEditingController.text.trim().isNotEmpty) {
+                              if (widget.from == 'Idiom') {
+                                final CollectionReference collectionRef =
+                                    FirebaseFirestore.instance.collection(
+                                        authController.userStringIdiom.value);
+                                String? docID = await checkModelExists(
+                                    authController.userStringIdiom.value,
+                                    widget.word.word.toLowerCase());
 
-                        String? docID = await checkModelExists(
-                            authController.userString
-                                .value, // Replace with your Firestore collection name
-                            widget.word.word.toLowerCase());
+                                bool isExist = isStringNotNullOrEmpty(docID);
+                                if (isExist) {
+                                  collectionRef.doc(docID).update({
+                                    'id': docid,
+                                    'sentence': sentenceEditingController.text
+                                        .trim()
+                                        .toLowerCase(),
+                                    'word': wordEditingController.text
+                                        .trim()
+                                        .toLowerCase(),
+                                    'meaning': meaningEditingController.text
+                                        .trim()
+                                        .toLowerCase(),
+                                  }).then((value) {
+                                    Get.put(IdiomController())
+                                        .fetchUserIdioms();
+                                  });
+                                  Get.snackbar(
+                                      "Idiom Exist", "Updated Successfully");
 
-                        //   print(docID);
-                        if (wordEditingController.text.isNotEmpty) {
-                          bool isExist = isStringNotNullOrEmpty(docID);
-                          if (isExist) {
-                            // print(docID);
-                            // print("Exist: ");
-                            collectionRef.doc(docID).update({
-                              'id': docid,
-                              'sentence': sentenceEditingController.text,
-                              'word': wordEditingController.text.trim().toLowerCase(),
-                              'meaning': meaningEditingController.text
-                            });
-                            Get.snackbar(
-                                "Word Exist", "Updated Successfully");
-                          } else {
-                         //   print("Not Exist: ");
+                                  print("Idiom Updated Successfully");
+                                } else {
+                                  int id =
+                                      DateTime.now().microsecondsSinceEpoch;
+                                  int wordID = wordController.mywordList.length;
+                                  await collectionRef.doc(id.toString()).set({
+                                    'id': wordID,
+                                    'sentence': sentenceEditingController.text,
+                                    'word': wordEditingController.text
+                                        .toLowerCase(),
+                                    'meaning': meaningEditingController.text
+                                  }).then((value) => Get.snackbar("Success",
+                                      "${wordEditingController.text} added Successfully"));
+                                }
 
-                            int id = DateTime.now().microsecondsSinceEpoch;
-                            int wordID = wordController.mywordList.length;
+                                Navigator.pop(context);
+                              } else {
+                                print("Word updated funtion");
+                                final CollectionReference collectionRef =
+                                    FirebaseFirestore.instance.collection(
+                                        authController.userString.value);
+                                String? docID = await checkModelExists(
+                                    authController.userString.value,
+                                    widget.word.word.toLowerCase());
 
-                            await collectionRef.doc(id.toString()).set({
-                              'id': wordID,
-                              'sentence': sentenceEditingController.text,
-                              'word': wordEditingController.text.toLowerCase(),
-                              'meaning': meaningEditingController.text
-                            }).then((value) => Get.snackbar("Success",
-                                "${wordEditingController.text} added Successfully"));
+                                bool isExist = isStringNotNullOrEmpty(docID);
+                                if (isExist) {
+                                  collectionRef.doc(docID).update({
+                                    'id': docid,
+                                    'sentence': sentenceEditingController.text,
+                                    'word': wordEditingController.text
+                                        .trim()
+                                        .toLowerCase(),
+                                    'meaning': meaningEditingController.text
+                                  });
+                                  Get.snackbar(
+                                      "Word Exist", "Updated Successfully");
 
-                            Navigator.of(context).pop();
-                          }
-                          wordController.fetchAllWords2();
-                        }
-                      },
-                    ),
-                  ),
+                                  print("IDiom Updated Successfully");
+                                } else {
+                                  int id =
+                                      DateTime.now().microsecondsSinceEpoch;
+                                  int wordID = wordController.mywordList.length;
+
+                                  await collectionRef.doc(id.toString()).set({
+                                    'id': wordID,
+                                    'sentence': sentenceEditingController.text,
+                                    'word': wordEditingController.text
+                                        .toLowerCase(),
+                                    'meaning': meaningEditingController.text
+                                  }).then((value) => Get.snackbar("Success",
+                                      "${wordEditingController.text} added Successfully"));
+                                }
+                                wordController.fetchAllWords();
+                                Navigator.pop(context);
+                              }
+                            } else {
+                              Get.snackbar("Failed", "Something is wrong");
+                            }
+                          })),
                 ],
               ),
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: frontColor,
+        floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
         onPressed: () {
-          Get.to(AddNewWord());
+          Get.toNamed(
+            RouteHelper.getAddNewWordPage(),
+            arguments: {
+              'from': widget.from,
+            },
+          );
         },
         child: Icon(
           Icons.add,
           color: Colors.white,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100.0),
         ),
       ),
     );
